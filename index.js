@@ -17,6 +17,11 @@ var min = 0;
 var sec = 0;
 function StartTimer(breakType) {
 //    alert(breakType);
+console.log('timerType=', timerType);
+console.log('timerStopTime=', timerStopTime);
+console.log('timeUsed=', timeUsed);
+console.log('min=', min);
+console.log('sec=', sec);
     switch (breakType) {
         case 'Work': // 30sec
             timerType = 'Work';
@@ -65,11 +70,45 @@ function RunTimer() {
     if (timeUsed < timerStopTime)
         setTimeout(RunTimer, 1000);
     else {
-        //alert('Work / break time over');
-        document.getElementById('timer-type').innerText = '';
+        document.getElementById('timer-type').innerText = 'Game over';
+        // Save time worked into the localstorage
+        if (timerType == 'Work')
+            SaveTime('25', 'totalworktime');
+        else if (timerType == 'ShortBreak')
+            SaveTime('5', 'totalbreaktime');
+        else
+            SaveTime('15', 'totalbreaktime');
+        LoadTime();
         timeUsed = 0;
-        min = 0;
-        sec = 0;
+        min = sec = 0;
     }
+}
 
+/*
+    Save time worked into the localstorage
+*/
+function SaveTime(amountOfTime, timeType) {
+    // Check browser support
+    t = localStorage.getItem(timeType);
+    
+    console.log(parseInt(t) + parseInt(amountOfTime));
+    localStorage.setItem(timeType, parseInt(t) + parseInt(amountOfTime));
+}
+
+function LoadTime() {
+    // Retrieve
+    document.getElementById("total-work-time").innerHTML = localStorage.getItem("totalworktime");
+    document.getElementById("total-break-time").innerHTML = localStorage.getItem("totalbreaktime");
+}
+
+function DataStorage() {
+// Check browser support
+    if (typeof(Storage) !== "undefined") {
+        // Store
+        localStorage.setItem("lastname", "Smith");
+        // Retrieve
+        document.getElementById("result").innerHTML = localStorage.getItem("lastname");
+    } else {
+        document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+    }
 }
